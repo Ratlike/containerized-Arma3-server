@@ -60,6 +60,7 @@ services:
       OTHER_INSTANCES: ${HEADLESS_COUNT}
       SERVER_PASS: ${SERVER_PASS}
       SERVER_ADMIN_PASS: ${SERVER_ADMIN_PASS}
+      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
     depends_on:
       mod-manager:
         condition: service_completed_successfully

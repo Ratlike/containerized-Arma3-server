@@ -35,6 +35,7 @@ services:
       OTHER_INSTANCES: ${HEADLESS_COUNT}
       SERVER_PASS: ${SERVER_PASS}
       SERVER_ADMIN_PASS: ${SERVER_ADMIN_PASS}
+      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
     # Ensure we start after Dropbox to have the files
     depends_on:
       dropbox:

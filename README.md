@@ -55,6 +55,7 @@ HOME_FOLDER=/mnt/arma/Arma3
 HEADLESS_COUNT=2
 SERVER_PASS=your_server_password
 SERVER_ADMIN_PASS=your_admin_password
+SERVER_HOSTNAME=My Arma 3 server
 TS_SERVER_PASS=your_teamspeak_password
 MOD_LIST=coremodsv2
 ```
@@ -151,6 +152,7 @@ Simply include one of the keywords in your modlist filename, and the system will
 | `HEADLESS_COUNT` | Number of headless client instances | No | 2 |
 | `SERVER_PASS` | Server password for players | No | - |
 | `SERVER_ADMIN_PASS` | Admin password | No | - |
+| `SERVER_HOSTNAME` | Server hostname/name displayed in server browser | No | Noitavasara |
 | `TS_SERVER_PASS` | TeamSpeak server query password | No | - |
 
 ## Volume Mounts
