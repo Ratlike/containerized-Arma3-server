@@ -1,0 +1,60 @@
+# Dockerfile for mod-manager using Ubuntu 20.04 as base
+FROM ubuntu:20.04
+
+# Prevent interactive prompts during package installation.
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required packages and add NodeSource repository for Node.js 18.
+RUN apt-get update && \
+    apt-get install -y \
+      curl \
+      wget \
+      unzip \
+      ca-certificates \
+      xmlstarlet \
+      fuse \
+      ciopfs \
+      acl \
+      lib32gcc-s1 \
+      libc6-i386 \
+      build-essential \
+      git && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install SteamCMD
+RUN mkdir /steamcmd && \
+    cd /steamcmd && \
+    wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz && \
+    tar -xvzf steamcmd_linux.tar.gz && \
+    rm steamcmd_linux.tar.gz
+
+WORKDIR /app
+
+# Copy package files and install Node dependencies
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Copy mod-manager scripts
+COPY mod_manager/scripts/ ./scripts/
+
+# Copy entrypoint script
+COPY mod_manager_entrypoint.sh ./
+RUN chmod +x mod_manager_entrypoint.sh
+
+RUN apt-get update && apt-get install -y gosu && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g 1001 linuxgsm && useradd -m -u 1001 -g 1001 linuxgsm
+RUN chown -R linuxgsm:linuxgsm /steamcmd
+
+# Create directories for ciopfs
+RUN mkdir -p /home/linuxgsm/Steam
+
+RUN sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
+
+# Set the entrypoint so that ciopfs mounts before running the command.
+ENTRYPOINT ["/app/mod_manager_entrypoint.sh"]
+
+# CMD ["sleep", "infinity"]
+CMD ["node", "./scripts/modUpdater.js"]
