@@ -25,6 +25,7 @@ This setup uses Docker Compose to orchestrate multiple services:
 
 - Docker and Docker Compose installed
 - Steam account with Arma 3 ownership
+  - Ownership is required in order to download mods over steamcmd
 - Steam API key (get one from [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey))
 - Dropbox account (if using Dropbox sync feature)
 
