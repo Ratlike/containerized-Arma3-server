@@ -1,0 +1,22 @@
+{
+    "name": "arma3-mod-manager",
+    "version": "1.0.0",
+    "description": "Containerized mod manager/updater for Arma 3",
+    "main": "scripts/modUpdater.js",
+    "scripts": {
+      "start": "node scripts/modUpdater.js",
+      "parse": "node scripts/parseModlists.js",
+      "install_mod": "node scripts/installMod.js"
+    },
+    "dependencies": {
+      "cheerio": "^1.0.0-rc.12",
+      "node-fetch": "^2.6.1",
+      "prompt-sync": "^4.2.0"
+    },
+    "engines": {
+      "node": ">=18"
+    },
+    "author": "Ratlike",
+    "license": "MIT"
+  }
+  

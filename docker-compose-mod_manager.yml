@@ -1,0 +1,50 @@
+services:
+  dropbox:
+    image: otherguy/dropbox:latest
+    container_name: dropbox
+    restart: unless-stopped
+    # The "DROPBOX_FOLDER" environment variable is the local name inside the container
+    # that gets synced with your actual Dropbox folder.
+    # The container's documentation explains how to link your account on first run.
+    environment:
+      - DROPBOX_UID=1001
+      - DROPBOX_GID=1001
+      - DROPBOX_FOLDER=/opt/dropbox/Dropbox
+    volumes:
+      - ${HOME_FOLDER}/dropbox:/opt/dropbox
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /opt/dropbox/Dropbox/mpmissions"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+
+  mod-manager:
+    build:
+      dockerfile: Dockerfile-mod_manager
+    container_name: mod_manager
+    privileged: true  # Required for FUSE-based mounting
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse  # Enable FUSE support inside the container
+    # Ensure we start after Dropbox to have the files
+    depends_on:
+      dropbox:
+        condition: service_healthy
+    volumes:
+      - ${HOME_FOLDER}/dropbox:/app/dropbox:ro
+      - ${HOME_FOLDER}/mod_manager/data:/app/data
+      - ${HOME_FOLDER}/data/.local/share/Steam:/app/steam_folder
+      - ${HOME_FOLDER}/data/serverfiles/keys:/app/keys
+    environment:
+      - STEAM_USER=${STEAM_USER}
+      - STEAM_PASS=${STEAM_PASS}
+      - STEAM_API_KEY=${STEAM_API_KEY}
+    stdin_open: true
+    tty: true
+
+
+# docker compose -f docker-compose-mod_manager.yml build
+# docker compose -f docker-compose-mod_manager.yml up
+# docker compose -f docker-compose-mod_manager.yml down

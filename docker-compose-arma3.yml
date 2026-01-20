@@ -1,0 +1,58 @@
+services:
+  dropbox:
+    image: otherguy/dropbox:latest
+    container_name: dropbox
+    restart: unless-stopped
+    # The "DROPBOX_FOLDER" environment variable is the local name inside the container 
+    # that gets synced with your actual Dropbox folder. 
+    # The container's documentation explains how to link your account on first run.
+    environment:
+      - DROPBOX_UID=1001
+      - DROPBOX_GID=1001
+      - DROPBOX_FOLDER=/opt/dropbox/Dropbox
+    volumes:
+      - ${HOME_FOLDER}/dropbox:/opt/dropbox
+    healthcheck:
+      test: ["CMD-SHELL", "test -d /opt/dropbox/Dropbox/mpmissions"]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+
+  arma3server:
+    container_name: arma3server
+    build:
+      dockerfile: Dockerfile-arma3
+    restart: unless-stopped
+    volumes:
+      - ${HOME_FOLDER}/dropbox/Dropbox/mpmissions:/mpmissions:rw
+      - ${HOME_FOLDER}/data:/data
+      - ${HOME_FOLDER}/custom_configs:/custom_configs:ro
+      - ${HOME_FOLDER}/mod_manager/data:/mod_manager_data:ro
+    network_mode: host
+    environment:
+      MOD_LIST: ${MOD_LIST}
+      OTHER_INSTANCES: ${HEADLESS_COUNT}
+      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
+      SERVER_PASS: ${SERVER_PASS}
+      SERVER_ADMIN_PASS: ${SERVER_ADMIN_PASS}
+    # Ensure we start after Dropbox to have the files
+    depends_on:
+      dropbox:
+        condition: service_healthy
+
+  teamspeak:
+    image: teamspeak
+    restart: unless-stopped
+    ports:
+      - 9987:9987/udp
+      - 10011:10011
+      - 30033:30033
+    volumes:
+      - ./teamspeak-data:/var/ts3server
+    environment:
+      TS3SERVER_LICENSE: accept
+      TS3SERVER_QUERY_PASSWORD: ${TS_SERVER_PASS}
+
+# Launch with command (example)
+# MOD_LIST=coremodsv2 docker compose -f docker-compose-arma3.yml up -d
