@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const { parseModlistsAndUpdate } = require('./parseModlistsAndUpdate');
 const { installOrUpdateMod } = require('./installOrUpdateMod');
@@ -134,7 +135,8 @@ async function main() {
                     const srcFile = path.join(keysDir, file);
                     const destFile = path.join(keysFolder, file);
                     try {
-                        fs.copyFileSync(srcFile, destFile);
+                        // Use cp command instead of fs.copyFileSync to handle FUSE mounts
+                        execSync(`cp -f "${srcFile}" "${destFile}"`, { encoding: 'utf8' });
                         // console.log(`Copied ${srcFile} -> ${destFile}`);
                     } catch (err) {
                         console.error(`Error copying ${srcFile} to ${destFile}: ${err}`);

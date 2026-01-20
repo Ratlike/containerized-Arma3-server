@@ -58,15 +58,16 @@ SERVER_PASS=your_server_password
 SERVER_ADMIN_PASS=your_admin_password
 SERVER_HOSTNAME=My Arma 3 server
 TS_SERVER_PASS=your_teamspeak_password
-MOD_LIST=coremodsv2
+MOD_LIST=modlist_name
 ```
 
 ### 3. Set Up Dropbox
 
 If using the Dropbox sync feature:
 
-1. Place your HTML modlist files in your Dropbox under `Dropbox/mpmissions/`
-2. The modlist HTML files should contain Steam Workshop links in a table format
+1. Export HTML modlist files from Arma 3 launcher
+2. Place your HTML modlist files in your Dropbox under `Dropbox/mpmissions/`
+3. Place also any missions you wish to run on the server into this same folder, it will be mounted as the mpmissions folder on the server
 3. First run will require linking your Dropbox account (follow container logs for instructions)
 
 ### 4. Launch the Server
@@ -76,12 +77,12 @@ If using the Dropbox sync feature:
 docker compose -f docker-compose-full.yml up -d
 ```
 
-**Arma 3 server only (without mod manager):**
+**Arma 3 server only (without mod manager if you know mods are up to date):**
 ```bash
 docker compose -f docker-compose-arma3.yml up -d
 ```
 
-**Mod manager only (for testing/updating mods):**
+**Mod manager only (for updating mods):**
 ```bash
 docker compose -f docker-compose-mod_manager.yml up
 ```
