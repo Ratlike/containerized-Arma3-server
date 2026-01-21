@@ -33,9 +33,9 @@ services:
     environment:
       MOD_LIST: ${MOD_LIST}
       OTHER_INSTANCES: ${HEADLESS_COUNT}
+      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
       SERVER_PASS: ${SERVER_PASS}
       SERVER_ADMIN_PASS: ${SERVER_ADMIN_PASS}
-      SERVER_HOSTNAME: ${SERVER_HOSTNAME}
     # Ensure we start after Dropbox to have the files
     depends_on:
       dropbox:

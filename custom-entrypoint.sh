@@ -38,6 +38,7 @@ if [ -d "/custom_configs/arma3server" ]; then
   
   # Replace password placeholders with actual environment variable values
   echo "Replacing password placeholders in server config..."
+  sed -i "s/\${SERVER_HOSTNAME}/${SERVER_HOSTNAME}/g" /data/serverfiles/cfg/arma3server.server.cfg
   sed -i "s/\${SERVER_PASS}/${SERVER_PASS}/g" /data/serverfiles/cfg/arma3server.server.cfg
   sed -i "s/\${SERVER_ADMIN_PASS}/${SERVER_ADMIN_PASS}/g" /data/serverfiles/cfg/arma3server.server.cfg
 else
