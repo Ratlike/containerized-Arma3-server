@@ -217,6 +217,17 @@ async function parseModlistsAndUpdate() {
     for (const mod of finalMasterList) {
         const apiInfo = await getModInfo(mod.id);
         mod.apiResponse = apiInfo; // May be null if the API call fails
+        
+        // Check if mod doesn't exist on Steam Workshop (result = 9 means "File Not Found")
+        if (apiInfo && apiInfo.result === 9) {
+            console.log(`Mod [${mod.id}] (${mod.name}) not found on Steam Workshop - blacklisting`);
+            mod.blacklisted = true;
+            mod.upToDate = false;
+            mod.failure = {
+                failedAt: new Date().toISOString(),
+                error: 'Mod not found on Steam Workshop (API result: 9)'
+            };
+        }
     }
 
     // Write masterlist and modParameters files

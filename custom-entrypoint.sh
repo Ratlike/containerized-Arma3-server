@@ -36,6 +36,18 @@ if [ -d "/custom_configs/arma3server" ]; then
   echo "Copying additional custom configuration files from /custom_configs/arma3server to /data/serverfiles/cfg..."
   gosu linuxgsm cp -rf /custom_configs/arma3server/* /data/serverfiles/cfg/
   
+  # Validate required environment variables
+  echo "Validating required environment variables..."
+  if [ -z "$SERVER_HOSTNAME" ]; then
+    echo "Error: SERVER_HOSTNAME environment variable is not set!"
+    exit 1
+  fi
+  if [ -z "$SERVER_ADMIN_PASS" ]; then
+    echo "Error: SERVER_ADMIN_PASS environment variable is not set!"
+    exit 1
+  fi
+  # SERVER_PASS is optional (empty string means no password - public server)
+  
   # Replace password placeholders with actual environment variable values
   echo "Replacing password placeholders in server config..."
   sed -i "s/\${SERVER_HOSTNAME}/${SERVER_HOSTNAME}/g" /data/serverfiles/cfg/arma3server.server.cfg
