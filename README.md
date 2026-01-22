@@ -1,3 +1,11 @@
+## Disclaimer
+
+This project is a work in progress and is provided as-is.
+
+The automatic mod installer uses SteamCMD and may trigger Steam rate limiting when Steam Guard is enabled. This can result in temporary connectivity restrictions such as an IP-based flood protection or short-term bans. Using the mod installer with Steam Guard enabled is not advised.
+
+Recommended approach: use a dedicated Steam account that owns Arma 3 and is used only for server and mod downloads.
+
 # Containerized Arma 3 Server
 
 A fully containerized Arma 3 dedicated server solution with automatic mod management, Dropbox integration, and optional TeamSpeak server.
