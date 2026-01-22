@@ -7,8 +7,8 @@ services:
     # that gets synced with your actual Dropbox folder. 
     # The container's documentation explains how to link your account on first run.
     environment:
-      - DROPBOX_UID=1001
-      - DROPBOX_GID=1001
+      - DROPBOX_UID=1000
+      - DROPBOX_GID=1000
       - DROPBOX_FOLDER=/opt/dropbox/Dropbox
     volumes:
       - ${HOME_FOLDER}/dropbox:/opt/dropbox

@@ -45,7 +45,7 @@ RUN chmod +x mod_manager_entrypoint.sh
 
 RUN apt-get update && apt-get install -y gosu && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -g 1001 linuxgsm && useradd -m -u 1001 -g 1001 linuxgsm
+RUN groupadd -g 1000 linuxgsm && useradd -m -u 1000 -g 1000 linuxgsm
 RUN chown -R linuxgsm:linuxgsm /steamcmd
 
 # Create directories for ciopfs

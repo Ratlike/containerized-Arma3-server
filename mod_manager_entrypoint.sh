@@ -12,12 +12,12 @@ echo "Fixing permissions on /app/data..."
 chown -R linuxgsm:linuxgsm /app/data
 
 echo "Granting linuxgsm write access to /app/steam_folder via ACL"
-setfacl -R -m u:1001:rwx /app/steam_folder || true
-setfacl -R -d -m u:1001:rwx /app/steam_folder || true
+setfacl -R -m u:1000:rwx /app/steam_folder || true
+setfacl -R -d -m u:1000:rwx /app/steam_folder || true
 
 echo "Granting linuxgsm write access to /app/keys via ACL"
-setfacl -R -m u:1001:rwx /app/keys || true
-setfacl -R -d -m u:1001:rwx /app/keys || true
+setfacl -R -m u:1000:rwx /app/keys || true
+setfacl -R -d -m u:1000:rwx /app/keys || true
 
 echo "Switching to user linuxgsm and starting the app..."
 exec gosu linuxgsm "$@"
