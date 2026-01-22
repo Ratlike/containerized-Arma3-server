@@ -114,12 +114,12 @@ async function installOrUpdateMod(modId, newTimeUpdated = null) {
             const actualSize = getDirectorySize(modPath);
             const expectedSize = parseInt(modEntry.apiResponse.file_size, 10);
             
-            // Allow 10% tolerance for size differences (filesystem overhead, compression, metadata, etc.)
+            // Allow 10% tolerance below expected size (for incomplete downloads)
+            // Don't check upper bound - filesystem overhead can make it larger
             const tolerance = 0.10;
             const minSize = expectedSize * (1 - tolerance);
-            const maxSize = expectedSize * (1 + tolerance);
             
-            if (actualSize < minSize || actualSize > maxSize) {
+            if (actualSize < minSize) {
                 const actualMB = (actualSize / 1024 / 1024).toFixed(2);
                 const expectedMB = (expectedSize / 1024 / 1024).toFixed(2);
                 console.warn(`Size mismatch for mod [${modId}]: expected ~${expectedMB} MB, got ${actualMB} MB`);
