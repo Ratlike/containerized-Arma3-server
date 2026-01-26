@@ -169,10 +169,10 @@ Simply include one of the keywords in your modlist filename, and the system will
 
 The following volumes are used by the containers:
 
-- `${HOME_FOLDER}/dropbox` - Dropbox sync data
-- `${HOME_FOLDER}/data` - Server files, configs, and player data
-- `${HOME_FOLDER}/mod_manager/data` - Mod manager data (masterlist.json, modParameters.json)
-- `${HOME_FOLDER}/custom_configs` - Custom configuration files (read-only)
+- `./dropbox` - Dropbox sync data
+- `./data` - Server files, configs, and player data
+- `./mod_manager/data` - Mod manager data (masterlist.json, modParameters.json)
+- `./custom_configs` - Custom configuration files (read-only)
 
 ## Ports
 

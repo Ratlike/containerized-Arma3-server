@@ -11,7 +11,7 @@ services:
       - DROPBOX_GID=1000
       - DROPBOX_FOLDER=/opt/dropbox/Dropbox
     volumes:
-      - ${HOME_FOLDER}/dropbox:/opt/dropbox
+      - ./dropbox:/opt/dropbox
     healthcheck:
       test: ["CMD-SHELL", "test -d /opt/dropbox/Dropbox/mpmissions"]
       interval: 10s
@@ -33,10 +33,10 @@ services:
       dropbox:
         condition: service_healthy
     volumes:
-      - ${HOME_FOLDER}/dropbox:/app/dropbox:ro
-      - ${HOME_FOLDER}/mod_manager/data:/app/data
-      - ${HOME_FOLDER}/data/.local/share/Steam:/app/steam_folder
-      - ${HOME_FOLDER}/data/serverfiles/keys:/app/keys
+      - ./dropbox:/app/dropbox:ro
+      - ./mod_manager/data:/app/data
+      - ./data/.local/share/Steam:/app/steam_folder
+      - ./data/serverfiles/keys:/app/keys
     environment:
       - STEAM_USER=${STEAM_USER}
       - STEAM_PASS=${STEAM_PASS}
@@ -50,10 +50,10 @@ services:
       dockerfile: Dockerfile-arma3
     restart: unless-stopped
     volumes:
-      - ${HOME_FOLDER}/dropbox/Dropbox/mpmissions:/mpmissions:rw
-      - ${HOME_FOLDER}/data:/data
-      - ${HOME_FOLDER}/custom_configs:/custom_configs:ro
-      - ${HOME_FOLDER}/mod_manager/data:/mod_manager_data:ro
+      - ./dropbox/Dropbox/mpmissions:/mpmissions:rw
+      - ./data:/data
+      - ./custom_configs:/custom_configs:ro
+      - ./mod_manager/data:/mod_manager_data:ro
     network_mode: host
     environment:
       MOD_LIST: ${MOD_LIST}
