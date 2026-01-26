@@ -60,7 +60,6 @@ Edit `.env` with your settings:
 STEAM_USER=your_steam_username
 STEAM_PASS=your_steam_password
 STEAM_API_KEY=your_steam_api_key
-HOME_FOLDER=/mnt/arma/Arma3
 HEADLESS_COUNT=2
 SERVER_PASS=your_server_password
 SERVER_ADMIN_PASS=your_admin_password
@@ -157,7 +156,6 @@ Simply include one of the keywords in your modlist filename, and the system will
 | `STEAM_USER` | Steam account username | Yes | - |
 | `STEAM_PASS` | Steam account password | Yes | - |
 | `STEAM_API_KEY` | Steam Web API key | Yes | - |
-| `HOME_FOLDER` | Base directory for server data | Yes | - |
 | `MOD_LIST` | Name of modlist to load (from HTML filename) | No | - |
 | `HEADLESS_COUNT` | Number of headless client instances | No | 2 |
 | `SERVER_PASS` | Server password for players | No | - |
