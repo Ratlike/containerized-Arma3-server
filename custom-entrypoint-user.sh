@@ -79,7 +79,7 @@ if [ "${LGSM_DEV}" == "true" ]; then
 fi
 
 # Install game server
-if [ -z "$(ls -A -- "/data/serverfiles" 2> /dev/null)" ]; then
+if [ ! -f "/data/serverfiles/arma3server_x64" ]; then
   echo -e ""
   echo -e "Installing ${GAMESERVER}"
   echo -e "================================="
