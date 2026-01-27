@@ -19,5 +19,9 @@ echo "Granting linuxgsm write access to /app/keys via ACL"
 setfacl -R -m u:1000:rwx /app/keys || true
 setfacl -R -d -m u:1000:rwx /app/keys || true
 
+echo "Granting linuxgsm read access to /app/dropbox via ACL"
+setfacl -R -m u:1000:rx /app/dropbox || true
+setfacl -R -d -m u:1000:rx /app/dropbox || true
+
 echo "Switching to user linuxgsm and starting the app..."
 exec gosu linuxgsm "$@"
