@@ -46,6 +46,14 @@ if [ -d "/custom_configs/arma3server" ]; then
     echo "Error: SERVER_ADMIN_PASS environment variable is not set!"
     exit 1
   fi
+  if [ -z "$STEAM_USER" ]; then
+    echo "Error: STEAM_USER environment variable is not set!"
+    exit 1
+  fi
+  if [ -z "$STEAM_PASS" ]; then
+    echo "Error: STEAM_PASS environment variable is not set!"
+    exit 1
+  fi
   # SERVER_PASS is optional (empty string means no password - public server)
   
   # Replace password placeholders with actual environment variable values
@@ -61,6 +69,11 @@ fi
 if [ -d "/custom_configs/lgsm" ]; then
   echo "Copying additional custom configuration files from /custom_configs/lgsm to /data/config-lgsm/arma3server..."
   gosu linuxgsm cp -rf /custom_configs/lgsm/* /data/config-lgsm/arma3server/
+  
+  # Replace environment variable placeholders in LGSM config files
+  echo "Replacing environment variable placeholders in LGSM config..."
+  sed -i "s/\${STEAM_USER}/${STEAM_USER}/g" /data/config-lgsm/arma3server/*.cfg
+  sed -i "s/\${STEAM_PASS}/${STEAM_PASS}/g" /data/config-lgsm/arma3server/*.cfg
 else
   echo "No additional custom configuration directory /custom_configs/lgsm found; skipping copy."
 fi

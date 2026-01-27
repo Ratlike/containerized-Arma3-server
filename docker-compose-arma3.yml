@@ -36,6 +36,8 @@ services:
       SERVER_HOSTNAME: ${SERVER_HOSTNAME}
       SERVER_PASS: ${SERVER_PASS}
       SERVER_ADMIN_PASS: ${SERVER_ADMIN_PASS}
+      STEAM_USER: ${STEAM_USER}
+      STEAM_PASS: ${STEAM_PASS}
     # Ensure we start after Dropbox to have the files
     depends_on:
       dropbox:
