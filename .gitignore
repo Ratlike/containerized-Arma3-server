@@ -1,4 +1,6 @@
 data/
 dropbox/
 teamspeak-data/
+mod_manager/data/
+node_modules/
 .env

@@ -4,7 +4,7 @@ FROM ubuntu:20.04
 # Prevent interactive prompts during package installation.
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install required packages and add NodeSource repository for Node.js 18.
+# Install required packages and add NodeSource repository for Node.js 20.
 RUN apt-get update && \
     apt-get install -y \
       curl \
@@ -34,7 +34,7 @@ WORKDIR /app
 
 # Copy package files and install Node dependencies
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
 # Copy mod-manager scripts
 COPY mod_manager/scripts/ ./scripts/

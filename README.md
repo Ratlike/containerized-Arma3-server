@@ -2,7 +2,7 @@
 
 This project is a work in progress and is provided as-is.
 
-The automatic mod installer uses SteamCMD and may trigger Steam rate limiting when Steam Guard is enabled. This can result in temporary connectivity restrictions such as an IP-based flood protection or short-term bans. Using the mod installer with Steam Guard enabled is not advised.
+The server installation and the mod installer both log in to Steam through SteamCMD with a user name and a password. Neither can enter a Steam Guard code. The Steam account must have Steam Guard disabled. Repeated login attempts with Steam Guard enabled can trigger Steam rate limiting, such as IP-based flood protection or short-term bans.
 
 Recommended approach: use a dedicated Steam account that owns Arma 3 and is used only for server and mod downloads.
 
@@ -31,8 +31,11 @@ This setup uses Docker Compose to orchestrate multiple services:
 
 ## Prerequisites
 
-- Docker and Docker Compose installed
-- Steam account with Arma 3 ownership
+- A Linux host. The Arma 3 server uses `network_mode: host`, which Docker Desktop on Windows and macOS does not provide in the same way.
+- Docker and Docker Compose v2 installed
+- `/dev/fuse` available on the host. The mod manager runs as a privileged container and mounts a FUSE filesystem.
+- A host filesystem with ACL support for the repository folder (ext4, XFS and Btrfs have it by default)
+- Steam account with Arma 3 ownership and Steam Guard disabled
   - Ownership is required in order to download mods over steamcmd
 - Steam API key (get one from [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey))
 - Dropbox account (if using Dropbox sync feature)
@@ -64,6 +67,7 @@ HEADLESS_COUNT=2
 SERVER_PASS=your_server_password
 SERVER_ADMIN_PASS=your_admin_password
 SERVER_HOSTNAME=My Arma 3 server
+SERVER_IP=127.0.0.1
 TS_SERVER_PASS=your_teamspeak_password
 MOD_LIST=modlist_name
 ```
@@ -75,7 +79,11 @@ If using the Dropbox sync feature:
 1. Export HTML modlist files from Arma 3 launcher
 2. Place your HTML modlist files in your Dropbox under `Dropbox/mpmissions/`
 3. Place also any missions you wish to run on the server into this same folder, it will be mounted as the mpmissions folder on the server
-3. First run will require linking your Dropbox account (follow container logs for instructions)
+4. First run will require linking your Dropbox account (follow container logs for instructions)
+
+The other containers wait about 10 minutes for the folder `Dropbox/mpmissions` to appear. If linking and the first sync take longer, the launch command fails. Run the launch command again after the sync has finished.
+
+The mod manager reads the modlist files that are present when it starts. Wait until Dropbox has synced all of them before you start the mod manager.
 
 ### 4. Launch the Server
 
@@ -103,7 +111,9 @@ Custom configuration files are organized in the `custom_configs/` directory:
 - `custom_configs/arma3server/` - Server and network configuration files (`.cfg`, `.network.cfg`)
 - `custom_configs/lgsm/` - LinuxGSM configuration files
 
-The server supports multiple instances (main server + headless clients). Configuration files follow this naming pattern:
+The values in `.env` are written into the configuration files when the container starts. Do not edit the placeholders such as `${SERVER_HOSTNAME}` in the tracked files.
+
+The server supports multiple instances (main server + headless clients). The repository contains configuration files for 2 headless clients. To use a higher `HEADLESS_COUNT`, add the configuration files for each additional instance first. The container stops with an error when an LGSM configuration file is missing. Configuration files follow this naming pattern:
 - Main server: `arma3server.cfg`, `arma3server.server.cfg`, `arma3server.network.cfg`
 - Instance 2: `arma3server-2.cfg`, `arma3server-2.server.cfg`, `arma3server-2.network.cfg`
 - Instance 3: `arma3server-3.cfg`, `arma3server-3.server.cfg`, `arma3server-3.network.cfg`
@@ -114,13 +124,14 @@ The mod manager uses HTML modlist files from Dropbox to determine which mods to 
 
 1. Create an HTML file with a table containing Steam Workshop links
 2. Place it in `Dropbox/mpmissions/` (e.g., `coremodsv2.html`)
-3. Set `MOD_LIST=coremodsv2` in your `.env` file
+3. Set `MOD_LIST=coremodsv2` in your `.env` file. The name is the filename without `.html`. Upper and lower case do not matter.
 4. The mod manager will automatically:
    - Parse the HTML file
    - Download/update mods via SteamCMD
    - Generate mod parameters for the server
    - Copy mod keys to the server
-   - Remove obsolete mods
+
+The mod manager keeps a mod on disk after the mod is removed from every modlist. To remove such a mod, delete its entry from `mod_manager/data/masterlist.json` and start the mod manager again.
 
 The mod manager creates two files in `/app/data`:
 - `masterlist.json` - Complete list of all mods from all HTML files
@@ -158,10 +169,21 @@ Simply include one of the keywords in your modlist filename, and the system will
 | `STEAM_API_KEY` | Steam Web API key | Yes | - |
 | `MOD_LIST` | Name of modlist to load (from HTML filename) | No | - |
 | `HEADLESS_COUNT` | Number of headless client instances | No | 2 |
-| `SERVER_PASS` | Server password for players | No | - |
-| `SERVER_ADMIN_PASS` | Admin password | No | - |
-| `SERVER_HOSTNAME` | Server hostname/name displayed in server browser | No | Noitavasara |
+| `SERVER_PASS` | Server password for players. Leave empty for a public server. Must not contain spaces. | No | - |
+| `SERVER_ADMIN_PASS` | Admin password | Yes | - |
+| `SERVER_HOSTNAME` | Server hostname/name displayed in server browser | Yes | - |
+| `SERVER_IP` | Address the headless clients connect to, and the address the server accepts headless clients from | Yes | - |
 | `TS_SERVER_PASS` | TeamSpeak server query password | No | - |
+
+Docker Compose expands `$` in `.env` values. Put a value that contains `$` in single quotes.
+
+## Updating the Arma 3 Server
+
+The server checks for an Arma 3 update only when the container starts. It does not update or restart while it runs. To update, restart the container:
+
+```bash
+docker compose -f docker-compose-full.yml restart arma3server
+```
 
 ## Volume Mounts
 

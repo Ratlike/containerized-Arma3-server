@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const prompt = require('prompt-sync')();
 
 const STEAM_USER = process.env.STEAM_USER || '';
@@ -99,9 +99,14 @@ async function installOrUpdateMod(modId, newTimeUpdated = null) {
     console.log(`\nInstalling/updating mod [${modId}] (${modEntry.name})...`);
 
     try {
-        const cmd = `${steamCmdPath} +login "${STEAM_USER}" "${STEAM_PASS}" +workshop_download_item 107410 ${modId} validate +quit`;
+        // Arguments are passed without a shell, so special characters in the credentials are safe.
+        const steamCmdArguments = [
+            '+login', STEAM_USER, STEAM_PASS,
+            '+workshop_download_item', '107410', String(modId), 'validate',
+            '+quit'
+        ];
         console.log(`Running steamcmd for mod ${modId}...`);
-        const output = execSync(cmd, { encoding: 'utf8' });
+        const output = execFileSync(steamCmdPath, steamCmdArguments, { encoding: 'utf8' });
 
         // Check for error-indicative output
         if (output.includes("ERROR!")) {
